@@ -17,8 +17,9 @@ class MockedTestCase(TestCase):
     def setUpClass(cls):
         cls.client = Client()
         cls.mock_server_port = cls.get_free_port()
-        cls.mock_server = HTTPServer(('localhost', cls.mock_server_port),
-                                     cls.mock_server_request_handler())
+        mock = cls.mock_server_request_handler()
+        mock.port = cls.mock_server_port
+        cls.mock_server = HTTPServer(('localhost', cls.mock_server_port), mock)
 
         cls.mock_server_thread = Thread(target=cls.mock_server.serve_forever)
         cls.mock_server_thread.setDaemon(True)

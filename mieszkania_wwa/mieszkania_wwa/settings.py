@@ -105,3 +105,4 @@ STATIC_URL = '/static/'
 
 OFFERS_URL = 'http://localhost:5000/offers'
 FACEBOOK_GROUP_URL = 'https://graph.facebook.com/v2.11/497345270640091/feed?access_token=1632216236848627|7TIlaPEK4wBTBKrwtPmaMuPV6xQ'
+OFFERS_TTL_DAYS = 30

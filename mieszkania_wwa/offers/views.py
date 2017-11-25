@@ -11,7 +11,7 @@ logger = logging.getLogger("offers")
 @MetricReporter.metered_view
 def get_offers(request):
     try:
-        offers = OfferRepository.instance().all()
+        offers = OfferRepository.all()
         return None, offers
     except CouldNotGetOffersError as e:
         logger.error(e.message)
