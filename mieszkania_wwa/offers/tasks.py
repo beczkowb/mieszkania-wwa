@@ -15,9 +15,18 @@ class OfferRefresher:
         self.offer_repository = offer_repository
 
     def refresh(self):
-        self.offer_repository.delete_all()
-        self._add_all()
+        self._delete_obsolete_offers_and_save_missing()
 
-    def _add_all(self):
-        for unsaved_offer in OfferFacebookRepository.from_last_n_days(settings.OFFERS_TTL_DAYS):
-            self.offer_repository.save(unsaved_offer)
+    def _delete_obsolete_offers_and_save_missing(self):
+        offers = self.offer_repository.all()
+        offer_post_ids = {o.post_id: o for o in offers}
+        offers_from_facebook = OfferFacebookRepository.from_last_n_days(settings.OFFERS_TTL_DAYS)
+        offer_post_ids_from_facebook = {o.post_id: o for o in offers_from_facebook}
+
+        for post_id, offer in offer_post_ids.items():
+            if post_id not in offer_post_ids_from_facebook:
+                self.offer_repository.delete(offer.pk)
+
+        for post_id, offer in offer_post_ids_from_facebook.items():
+            if post_id not in offer_post_ids:
+                self.offer_repository.save(offer)

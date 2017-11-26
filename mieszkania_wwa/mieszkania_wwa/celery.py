@@ -8,6 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mieszkania_wwa.settings')
 
 app = Celery('mieszkania_wwa', broker='redis://localhost')
 
+
 @app.task
 def refresh_offers():
     print('refresh started')
