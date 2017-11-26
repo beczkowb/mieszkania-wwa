@@ -1,6 +1,5 @@
 import json
 from http.server import BaseHTTPRequestHandler
-from unittest import mock
 
 from django.test import override_settings
 
@@ -23,7 +22,8 @@ class ShouldReturnAllOffersFromRepositoryMock(BaseHTTPRequestHandler):
                         'lat': '52.171962',
                         'lng': '20.997109',
                         'subject': 'some apartment',
-                        'price': '2000zl'
+                        'price': '2000zl',
+                        'post_id': 'post1'
                     },
                     'id': '59c77ca636f8b57904f3724f',
                     'links': {
@@ -36,7 +36,8 @@ class ShouldReturnAllOffersFromRepositoryMock(BaseHTTPRequestHandler):
                         'lat': '52.244365',
                         'lng': '20.982019',
                         'subject': 'some apartment 2',
-                        'price': '1000zl'
+                        'price': '1000zl',
+                        'post_id': 'post2'
                     },
                     'id': '59c77d4c36f8b57904f37250',
                     'links': {
@@ -78,14 +79,16 @@ class ShouldReturnAllOffers(MockedTestCase):
                         'lng': '20.997109',
                         'subject': 'some apartment',
                         'price': '2000zl',
-                        'pk': '59c77ca636f8b57904f3724f'
+                        'pk': '59c77ca636f8b57904f3724f',
+                        'post_id': 'post1'
                     },
                     {
                         'lat': '52.244365',
                         'lng': '20.982019',
                         'subject': 'some apartment 2',
                         'price': '1000zl',
-                        'pk': '59c77d4c36f8b57904f37250'
+                        'pk': '59c77d4c36f8b57904f37250',
+                        'post_id': 'post2'
                     }
                 ]
             )
@@ -165,7 +168,7 @@ class ShouldRefreshOffers(MockedTestCase):
             OFFERS_URL='http://localhost:{port}'.format(port=self.mock_server_port)
         ):
             # given
-            repository.save(UnsavedOffer('52.242714', '20.989553', '2000zł', 'bla bla'))
+            repository.save(UnsavedOffer('52.242714', '20.989553', '2000zł', 'bla bla', 'post1'))
 
             # when
             refresher.refresh()
@@ -179,3 +182,4 @@ class ShouldRefreshOffers(MockedTestCase):
             self.assertEqual(offer.lng, '20.989553')
             self.assertEqual(offer.price, '2000zł')
             self.assertEqual(offer.subject, 'bla1')
+            self.assertEqual(offer.post_id, '497346870639931')

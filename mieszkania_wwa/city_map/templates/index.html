@@ -55,10 +55,16 @@
                         lng: parseFloat(offers[i].lng)
                     },
                     map: map,
-                    title: offers[i].subject
+                    title: offers[i].subject + '\n' + offers[i].price,
+                    postId: offers[i].post_id
+                });
+                google.maps.event.addListener(marker, 'click', function() {
+                    window.location.href = 'https://www.facebook.com/groups/497345270640091/permalink/' + this.postId;
                 });
             }
         });
+
+
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbMtnYu-c2DvqhnuAFR2ROU0NdqGAQpYY&callback=initMap&language=pl&region=PL"

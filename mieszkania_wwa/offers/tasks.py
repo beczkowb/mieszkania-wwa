@@ -3,6 +3,14 @@ from django.conf import settings
 
 
 class OfferRefresher:
+    _INSTANCE = None
+
+    @classmethod
+    def instance(cls):
+        if cls._INSTANCE is None:
+            cls._INSTANCE = OfferRefresher(OfferRepository)
+        return cls._INSTANCE
+
     def __init__(self, offer_repository):
         self.offer_repository = offer_repository
 
