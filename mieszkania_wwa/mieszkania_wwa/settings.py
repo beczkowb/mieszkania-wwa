@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_celery_beat',
+    'raven.contrib.django.raven_compat',
     'city_map',
     'offers',
     'utils',
@@ -114,3 +115,51 @@ STATIC_URL = '/static/'
 OFFERS_URL = 'http://localhost:5000/offers'
 FACEBOOK_GROUP_URL = 'https://graph.facebook.com/v2.11/497345270640091/feed?access_token=1632216236848627|7TIlaPEK4wBTBKrwtPmaMuPV6xQ'
 OFFERS_TTL_DAYS = 30
+
+import os
+import raven
+
+RAVEN_CONFIG = {
+    'dsn': 'https://c73ee0f0390d4a0abe3b358e60d70af4:c333639b37f64a17be7df1630adffeb2@sentry.io/251099',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+
+    'formatters': {
+        'console': {
+            'format': '[%(asctime)s][%(levelname)s] %(name)s '
+                      '%(filename)s:%(funcName)s:%(lineno)d | %(message)s',
+            'datefmt': '%H:%M:%S',
+            },
+        },
+
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+            },
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.handlers.logging.SentryHandler',
+            'dsn': 'https://c73ee0f0390d4a0abe3b358e60d70af4:c333639b37f64a17be7df1630adffeb2@sentry.io/251099',
+            },
+        },
+
+    'loggers': {
+        '': {
+            'handlers': ['console', 'sentry'],
+            'level': 'DEBUG',
+            'propagate': False,
+            },
+        'your_app': {
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}

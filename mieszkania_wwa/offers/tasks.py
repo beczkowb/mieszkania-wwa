@@ -1,5 +1,9 @@
+import logging
+from datetime import datetime
 from offers.repositories import OfferFacebookRepository, OfferRepository
 from django.conf import settings
+
+logger = logging.getLogger("offer_refresher")
 
 
 class OfferRefresher:
@@ -15,7 +19,10 @@ class OfferRefresher:
         self.offer_repository = offer_repository
 
     def refresh(self):
+        start = datetime.now()
         self._delete_obsolete_offers_and_save_missing()
+        duration = (datetime.now() - start).seconds
+        logger.error(duration)
 
     def _delete_obsolete_offers_and_save_missing(self):
         offers = self.offer_repository.all()
